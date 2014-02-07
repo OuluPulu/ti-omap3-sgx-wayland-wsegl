@@ -58,6 +58,8 @@
 #include <time.h>
 #include "linux/omapfb.h"
 
+#include <stdio.h>
+
 #include "log.h"
 #include "wayland-sgx-server-protocol.h"
 #include "wayland-sgx-client-protocol.h"
@@ -68,7 +70,6 @@ static WSEGLCaps const wseglDisplayCaps[] = {
     {WSEGL_CAP_PIXMAPS_USE_HW_SYNC, 1},
     {WSEGL_NO_CAPS, 0}
 };
-
 
 struct wl_egl_display*
 wl_egl_display_create(struct wl_display *display)
@@ -650,7 +651,8 @@ static WSEGLError wseglSwapDrawable
        update_window.height = update_window.out_height = drawable->height;
        update_window.format = 0;
 
-       assert(ioctl(drawable->display->fd, OMAPFB_UPDATE_WINDOW, &update_window) == 0);
+       // TODO WHY IS THIS ASSERT HERE
+//       assert(ioctl(drawable->display->fd, OMAPFB_UPDATE_WINDOW, &update_window) == 0);
     }
     
     drawable->currentBackBuffer   
@@ -749,7 +751,6 @@ static WSEGLError wseglGetDrawableParameters
         renderParams->pvLinearAddress = pixmap->pvrmem->pBase;
         renderParams->ui32HWAddress = pixmap->pvrmem->ui32DevAddr;
         renderParams->hPrivateData = pixmap->pvrmem->hPrivateData;
-
         return WSEGL_SUCCESS;
     }
 
@@ -778,6 +779,21 @@ static WSEGLError wseglGetDrawableParameters
 
 }
 
+/* Function stub for ConnectDrawable() */
+static WSEGLError wseglConnectDrawable(WSEGLDrawableHandle hDrawable)
+{
+    WSEGL_UNREFERENCED_PARAMETER(hDrawable);
+    return WSEGL_SUCCESS;
+}
+
+/* Function stub for DisconnectDrawable() */
+static WSEGLError wseglDisconnectDrawable(WSEGLDrawableHandle hDrawable)
+{
+    WSEGL_UNREFERENCED_PARAMETER(hDrawable);
+    return WSEGL_SUCCESS;
+}
+
+
 static WSEGL_FunctionTable const wseglFunctions = {
     WSEGL_VERSION,
     wseglIsDisplayValid,
@@ -791,7 +807,9 @@ static WSEGL_FunctionTable const wseglFunctions = {
     wseglWaitNative,
     wseglCopyFromDrawable,
     wseglCopyFromPBuffer,
-    wseglGetDrawableParameters
+    wseglGetDrawableParameters,
+    wseglConnectDrawable,
+    wseglDisconnectDrawable
 };
 
 /* Return the table of WSEGL functions to the EGL implementation */

@@ -23,6 +23,9 @@
 #include <string.h>
 #include <assert.h>
 
+#include <wayland-server.h>
+#include <wayland-server-protocol.h>
+
 #include "server_wlegl_buffer.h"
 #include "server_wlegl_private.h"
 

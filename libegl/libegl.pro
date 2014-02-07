@@ -7,10 +7,13 @@ SOURCES = egl.c
 
 include(../common/common.pri)
 
-CONFIG += link_pkgconfig
-PKGCONFIG += wayland-client wayland-server
+!contains(QT_CONFIG, no-pkg-config) {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += wayland-client wayland-server
+} else {
+    LIBS += -ldl -lwayland-client -lwayland-server -lwayland-egl
+}
 
-LIBS += -ldl
 
-target.path = /usr/lib
+target.path = $$PREFIX/usr/lib
 INSTALLS += target
